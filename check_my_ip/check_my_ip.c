@@ -214,8 +214,10 @@ int main()
     if (err!=0)
 	goto leave;
 
+    err=(strncmp(info.ipstr,info.lustr,IPSTR_SIZE)!=0);
+
     printf("%s ?== %s : ",info.ipstr,info.lustr);
-    printf("%s\n",(strncmp(info.ipstr,info.lustr,IPSTR_SIZE)==0)?"Yes":"No");
+    printf("%s\n",(err==0)?"Yes":"No");
 
 leave:
     if (info.rdata!=NULL) free(info.rdata);
