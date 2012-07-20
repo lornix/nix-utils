@@ -2,7 +2,7 @@
 #
 OBJS=check_my_ip
 #
-CFLAGS+= -Wall -Wextra -Wundef
+CFLAGS+= -Wall -Wextra -Wunused
 CFLAGS+= -g
 #
 LDFLAGS+= -lcurl

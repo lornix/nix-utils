@@ -2,7 +2,7 @@
 #
 OBJS=fac
 #
-CFLAGS+= -Wall -Wextra -Wundef
+CFLAGS+= -Wall -Wextra -Wunused
 CFLAGS+= -g
 #
 LDFLAGS+= -lgmp

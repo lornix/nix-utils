@@ -2,7 +2,7 @@
 # pretty much always want debugging symbols included
 CFLAGS+= -g
 # yell out all warnings and whatnot
-CFLAGS+= -Wall -Wextra -Wundef
+CFLAGS+= -Wall -Wextra -Wunused
 # optimize!
 CFLAGS+= -O
 # force 32bit

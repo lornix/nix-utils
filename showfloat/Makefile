@@ -2,7 +2,7 @@
 #
 OBJS=showfloat
 #
-CFLAGS+= -Wall -Wextra -Wundef
+CFLAGS+= -Wall -Wextra -Wunused
 CFLAGS+= -g
 #
 LDFLAGS+= -lm

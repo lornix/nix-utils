@@ -2,7 +2,7 @@
 #
 OBJS=showerr
 #
-CFLAGS+= -Wall -Wextra -Wundef
+CFLAGS+= -Wall -Wextra -Wunused
 CFLAGS+= -g
 CFLAGS+= -m32
 #
