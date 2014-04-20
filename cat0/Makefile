@@ -6,7 +6,7 @@ CFLAGS+= -Wall -Wextra -Wunused
 # optimize!
 CFLAGS+= -O
 # force 32bit
-CFLAGS+= -m32
+#CFLAGS+= -m32
 #
 CC:=gcc
 #

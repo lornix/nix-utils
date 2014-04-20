@@ -4,7 +4,7 @@ OBJS=showerr
 #
 CFLAGS+= -Wall -Wextra -Wunused
 CFLAGS+= -g
-CFLAGS+= -m32
+#CFLAGS+= -m32
 #
 LDFLAGS+=
 #

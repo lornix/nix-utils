@@ -23,34 +23,6 @@
  *    little endian system
  */
 
-void showfloat(float f)
-{
-    union {
-	float f;
-	long int l;
-    } x;
-    x.f=f;
-    /* ========== bits: 1 8 23 = sign,exponent,mantissa */
-    printf("%08lx (%lx-%02lx-%06lx)",x.l,(x.l>>31)&1,(x.l>>23)&((1l<<8)-1),x.l&((1l<<23)-1));
-    // 3fb4fdf4 / 0-7f-34fdf4 = 1.414 : 1.414000
-    // 0 : 0111-1111 : 011-0100-1111-1101-1111-0100 (1/8/23)
-}
-
-#ifdef __x86_64
-/* only add this if we're compiling on 64bit machine */
-void showdouble(double d)
-{
-    union {
-	double d;
-	unsigned long int l;
-    } x;
-    x.d=d;
-    /* =============== bits: 1 11 52 = sign,exponent,mantissa */
-    printf("%016lx (%lx-%03lx-%013lx)",x.l,((x.l>>63)&1),(x.l>>52)&((1l<<11)-1),(x.l&((1l<<52)-1)));
-    // 3ff69fbe76c8b439 / 0-3ff-69fbe76c8b439 = 1.414 : 1.414000
-    // 0 : 011-1111-1111 : 0110-1001-1111-1011-1110-0111-0110-1100-1000-1011-0100-0011-1001 (1/11/52)
-}
-#endif
 void showbinary(double d)
 {
 #define MAXDIGITS 100
@@ -92,49 +64,61 @@ void showbinary(double d)
     }
 }
 
-void showresults(int f1,int f2,int f3,int f4,char*s)
+void showresults(int arglen,char*s)
 {
     double d=strtod(s,NULL);
     float f=strtof(s,NULL);
     unsigned long int i=strtoul(s,NULL,0);
-    int padlen;
-    printf("%*s",f1,s);
+    union {
+	float f;
+	double d;
+	unsigned long int l;
+    } x;
+
+    printf("%*s",arglen,s);
     printf(" => ");
-    printf("%*f",f4,f);
+    printf("(f) %f",f);
     printf(" : ");
-    printf("%*a",f3,d);
+    printf("(d) %f",d);
     printf(" : ");
-    printf("0x");
+    printf("(da) 0x%a",d);
+    printf(" : ");
+    printf("(ix) 0x");
     if (i>=(1ul<<32)) {
-        printf("%0*lx",(f2/2),i>>32);
+        printf("%0lx",i>>32);
         printf(" ");
-        printf("%0*lx",(f2/2),i&0xffffffff);
+        printf("%0lx",i&0xffffffff);
     }
     else {
-        printf("%0*lx",f2,i);
+        printf("%0lx",i);
     }
-    padlen=f1;
     printf("\n");
-    printf("%*s => ",padlen," ");
-    showfloat(f);
-#ifdef __x86_64
-/* only add this if we're compiling on 64bit machine */
+
+    printf("%*s => ",arglen," ");
+
+    x.f=f;
+    /* ========== bits: 1 8 23 = sign,exponent,mantissa */
+    printf("(f) %08lx (%lx-%02lx-%06lx)",x.l,(x.l>>31)&1,(x.l>>23)&((1l<<8)-1),x.l&((1l<<23)-1));
+
     printf(" : ");
-    showdouble(d);
-#endif
+
+    x.d=d;
+    /* =============== bits: 1 11 52 = sign,exponent,mantissa */
+    printf("(d) %016lx (%lx-%03lx-%013lx)",x.l,((x.l>>63)&1),(x.l>>52)&((1l<<11)-1),(x.l&((1l<<52)-1)));
+
     printf("\n");
-    printf("%*s => ",padlen," ");
+
+    printf("%*s => ",arglen," ");
+
     showbinary(d);
+
     printf("\n");
 }
 
 int main(int argc,char*argv[])
 {
     int cnt;
-    unsigned int tmp,f1len=1,f2len=1,f3len=1,f4len=1;
-#define MAXSTRLEN 100
-    char tmpstr[MAXSTRLEN];
-
+    unsigned int arglen=1;
 
 #ifndef TEST
     if (argc<2) {
@@ -146,37 +130,15 @@ int main(int argc,char*argv[])
     /* determine max length of all fields */
     cnt=0;
     while ((++cnt)<argc) {
-	if (strlen(argv[cnt])>f1len)
-	    f1len=strlen(argv[cnt]);
-	if ((tmp=snprintf(tmpstr,MAXSTRLEN,"%lx",strtoul(argv[cnt],NULL,0)))>f2len)
-	    f2len=tmp;
-	if ((tmp=snprintf(tmpstr,MAXSTRLEN,"%a",strtod(argv[cnt],NULL)))>f3len)
-	    f3len=tmp;
-	if ((tmp=snprintf(tmpstr,MAXSTRLEN,"%f",strtod(argv[cnt],NULL)))>f4len)
-	    f4len=tmp;
+	if (strlen(argv[cnt])>arglen)
+	    arglen=strlen(argv[cnt]);
     }
-    /* round f2len up to next higher length (2/4/8/16) */
-    if (f2len>8) f2len=16;
-    else if (f2len>4) f2len=8;
-    else if (f2len>2) f2len=4;
-    else f2len=2;
 
     /* now display the arguments, using field widths from above */
     cnt=0;
     while ((++cnt)<argc) {
-	showresults(f1len,f2len,f3len,f4len,argv[cnt]);
+	showresults(arglen,argv[cnt]);
     }
-
-#ifdef TEST
-#define SHORT_PI "3.14"
-
-    showresults(4,2,20,8,SHORT_PI);
-
-    printf("EXPECTED:\n");
-    printf("3.14 => 0x03 : 0x1.91eb851eb851fp+1 : 3.140000 : 4048f5c3 (0-80-48f5c3) : 40091eb851eb851f (0-400-91eb851eb851f)\n");
-    printf("             : 11.001000111101011100001010001111010111000010100011111\n");
-
-#endif
 
     return 0;
 }
