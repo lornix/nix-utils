@@ -10,8 +10,8 @@ Usage:
 
 ## cat0
 
-Streams input to output, or from given file to output, converting <CR> to
-<00>.  Handy for using with *xargs*
+Streams input to output, or from given file to output, converting \<CR> to
+\<00>.  Handy for using with *xargs*
 
 ## check_my_ip
 
