@@ -96,12 +96,14 @@ void showresults(int arglen,char*s)
 
     printf("%*s => ",arglen," ");
 
+    x.l=0; /* clear out union */
     x.f=f;
     /* ========== bits: 1 8 23 = sign,exponent,mantissa */
     printf("(f) %08lx (%lx-%02lx-%06lx)",x.l,(x.l>>31)&1,(x.l>>23)&((1l<<8)-1),x.l&((1l<<23)-1));
 
     printf(" : ");
 
+    x.l=0; /* clear out union */
     x.d=d;
     /* =============== bits: 1 11 52 = sign,exponent,mantissa */
     printf("(d) %016lx (%lx-%03lx-%013lx)",x.l,((x.l>>63)&1),(x.l>>52)&((1l<<11)-1),(x.l&((1l<<52)-1)));
