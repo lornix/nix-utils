@@ -81,7 +81,7 @@ void showresults(int arglen,char*s)
     printf(" : ");
     printf("(d) %f",d);
     printf(" : ");
-    printf("(da) 0x%a",d);
+    printf("(da) %a",d);
     printf(" : ");
     printf("(ix) 0x");
     if (i>=(1ul<<32)) {
